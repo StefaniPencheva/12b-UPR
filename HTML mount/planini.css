@@ -1,0 +1,42 @@
+body {
+    max-width:80%
+    margin: 0 auto;
+}
+p {
+    text-align: justify;
+}
+h1{
+    color: darkgreen;
+}
+h1, h2{
+    text-align: center;
+}
+article{
+    width: 30%;
+    display: inline-block;
+
+    padding: 10px;
+    vertical-align: top;
+    height: 50%;
+    background: lightgreen;
+    border: 2px solid darkgreen;
+}
+section{
+    text-align: center;
+}
+.middle{
+    margin-left: 13px;
+    margin-right: 13px;
+}
+span {
+    font-weight: bold;
+}
+img{
+    max-width: 100%;
+    height: auto;
+}
+@media screen and (max-width: 800px) {
+    article{
+        width:100%;
+    }
+}
