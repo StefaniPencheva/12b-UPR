@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">My FirstWebPage</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<div id="slideshow" class="slideshow" data-ride="slideshow">
+    <img src="~/images/img1.png.png" alt="Images 1" />
+    <img src="~/images/img2.png.png" alt="Images 2" />
+    <img src="~/images/img3.png.png" alt="Images 3" />
+    <img src="~/images/img4.png.png" alt="Images 4" />
+
+</div>
+
+<script>
+    var slideShow = function (container) {
+        this.images = [];
+        this.curImage = 0;
+        for (i = 0; i < container.childElementCount; i++) {
+            this.images.push(container.children[i]);
+            this.images[i].style.display = "none";
+        }
+
+        var nextSlide = function () {
+            for (var i = 0; i < this.images.length; i++) {
+                this.images[i].style.display = "none";
+            }
+            this.images[this.curImage].style.display = "block";
+            this.curImage++;
+            if (this.curImage >= this.images.length) {
+                this.curImage = 0;
+            }
+            window.setTimeout(nextSlide.bind(this), 1000);
+        };
+        nextSlide.call(this);
+    };
+    slideShow(document.getElementById("slideshow"));
+</script>

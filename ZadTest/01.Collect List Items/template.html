@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Collect List Items</title>
+</head>
+<body>
+<ul id="items">
+    <li>first item</li>
+    <li>second item</li>
+    <li>third item</li>
+</ul>
+<textarea id="result"></textarea>
+<br>
+<button id="extractText">Extract Text</button>
+<script >
+ 
+var clickerButton =document.getElementById("extractText");
+
+var onButtonClick = function(){
+  var textarea = document.getElementsByTagName("li");
+  var text =document.getElementById("result");
+
+  for(let i= 0; i< textarea.length;i++ )
+  {
+
+   text.textContent+=textarea[i].textContent +"\n";
+
+  }
+  
+}
+clickerButton.addEventListener('click', onButtonClick);
+
+</script>
+</body>
+</html>
