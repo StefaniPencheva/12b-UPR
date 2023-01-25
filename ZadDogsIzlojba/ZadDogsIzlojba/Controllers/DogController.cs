@@ -12,7 +12,7 @@ namespace ZadDogsIzlojba.Controllers
     public class DogController : Controller
     {
         private readonly ApplicationDbContext context;
-        
+
         public DogController(ApplicationDbContext context)
         {
             this.context = context;
@@ -40,8 +40,8 @@ namespace ZadDogsIzlojba.Controllers
                     Breed = bindingModel.Breed,
                     Picture = bindingModel.Picture,
                 };
-            context.Dogs.Add(dogFormDb);
-            context.SaveChanges();
+                context.Dogs.Add(dogFormDb);
+                context.SaveChanges();
 
                 return this.RedirectToAction("Success");
             }
@@ -55,11 +55,11 @@ namespace ZadDogsIzlojba.Controllers
 
         public IActionResult All()
         {
-            
+
             List<DogAllViewModel> dogs = context.Dogs
                 .Select(dogFromDb => new DogAllViewModel
                 {
-                    Id=dogFromDb.Id,
+                    Id = dogFromDb.Id,
                     Name = dogFromDb.Name,
                     Age = dogFromDb.Age,
                     Breed = dogFromDb.Breed,
@@ -67,6 +67,104 @@ namespace ZadDogsIzlojba.Controllers
                 }
             ).ToList();
             return this.View(dogs);
+        }
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Dog item = context.Dogs.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            DogEditViewModel dog = new DogEditViewModel()
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Age = item.Age,
+                Breed = item.Breed,
+                Picture = item.Picture
+            };
+            return View(dog);
+        }
+        [HttpPost]
+        public IActionResult Edit(DogEditViewModel bindingModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Dog dog = new Dog
+                {
+                    Id = bindingModel.Id,
+                    Name = bindingModel.Name,
+                    Age = bindingModel.Age,
+                    Breed = bindingModel.Breed,
+                    Picture = bindingModel.Picture
+                };
+                context.Dogs.Update(dog);
+                context.SaveChanges();
+                return this.RedirectToAction("All");
+            }
+            return View(bindingModel);
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Dog item = context.Dogs.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            DogDeleteViewModel dog = new DogDeleteViewModel()
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Age = item.Age,
+                Breed = item.Breed,
+                Picture = item.Picture
+            };
+            return View(dog);
+        }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            Dog item = context.Dogs.Find(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+            context.Dogs.Remove(item);
+            context.SaveChanges();
+            return this.RedirectToAction("All", "Dog");
+        }
+
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Dog item = context.Dogs.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            DogDetailsViewModel dog = new DogDetailsViewModel()
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Age = item.Age,
+                Breed = item.Breed,
+                Picture = item.Picture
+            };
+            return View(dog);
         }
     }
 }
