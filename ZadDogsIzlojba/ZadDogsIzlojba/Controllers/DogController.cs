@@ -53,7 +53,7 @@ namespace ZadDogsIzlojba.Controllers
             return this.View();
         }
 
-        public IActionResult All()
+        public IActionResult All(string searchStringBreed, string searchStringName)
         {
 
             List<DogAllViewModel> dogs = context.Dogs
@@ -64,11 +64,38 @@ namespace ZadDogsIzlojba.Controllers
                     Age = dogFromDb.Age,
                     Breed = dogFromDb.Breed,
                     Picture = dogFromDb.Picture
-                }
-            ).ToList();
+                })
+                .ToList();
+            if (!String.IsNullOrEmpty(searchStringBreed)&& !String.IsNullOrEmpty(searchStringName))
+            {
+                dogs = dogs.Where(d => d.Breed.Contains(searchStringBreed) && d.Name.Contains(searchStringName)).ToList();
+            }
+            else if (!String.IsNullOrEmpty(searchStringBreed))
+            {
+                dogs = dogs.Where(d => d.Breed.Contains(searchStringBreed)).ToList();
+            }
+            else if (!String.IsNullOrEmpty(searchStringName))
+            {
+                dogs = dogs.Where(d => d.Name.Contains(searchStringName)).ToList();
+            }
             return this.View(dogs);
         }
+        public IActionResult Sort()
+        {
 
+            List<DogAllViewModel> dogs = context.Dogs
+                .Select(dogFromDb => new DogAllViewModel
+                {
+                    Id = dogFromDb.Id,
+                    Name = dogFromDb.Name,
+                    Age = dogFromDb.Age,
+                    Breed = dogFromDb.Breed,
+                    Picture = dogFromDb.Picture
+                }).OrderBy(x => x.Name)
+                .ToList();
+           
+            return this.View(dogs);
+        }
         public IActionResult Edit(int? id)
         {
             if (id == null)

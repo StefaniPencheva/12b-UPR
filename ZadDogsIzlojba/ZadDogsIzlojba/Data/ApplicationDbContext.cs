@@ -19,6 +19,7 @@ namespace ZadDogsIzlojba.Data
         public DbSet<ZadDogsIzlojba.Models.DogEditViewModel> DogEditViewModel { get; set; }
         public DbSet<ZadDogsIzlojba.Models.DogDeleteViewModel> DogDeleteViewModel { get; set; }
         public DbSet<ZadDogsIzlojba.Models.DogDetailsViewModel> DogDetailsViewModel { get; set; }
+        public DbSet<ZadDogsIzlojba.Models.DogAllViewModel> DogAllViewModel { get; set; }
         
     }
 }
