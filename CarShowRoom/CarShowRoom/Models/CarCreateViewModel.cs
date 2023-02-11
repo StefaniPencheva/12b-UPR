@@ -12,7 +12,7 @@ namespace CarShowRoom.Models
 
         [Required]
         [MaxLength(8)]
-        [Display(Name = "Number")]
+       
         public string RegNumber { get; set; }
 
         [Required]
@@ -28,7 +28,7 @@ namespace CarShowRoom.Models
         [Display(Name = "Car Picture")]
         public string Picture { get; set; }
 
-        public DateTime YearOfManufacture { get; set; }
+        public DateTime Year { get; set; }
 
         [Required]
         [Range(1000, 300000, ErrorMessage = "Age must be a possitive number and lower than 300000")]
@@ -36,3 +36,4 @@ namespace CarShowRoom.Models
         public double Price { get; set; }
     }
 }
+

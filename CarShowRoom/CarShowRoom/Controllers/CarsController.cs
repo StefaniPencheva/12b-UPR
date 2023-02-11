@@ -23,6 +23,7 @@ namespace CarShowRoom.Controllers
             return View();
         }
 
+        //!Create!
         public IActionResult Create()
         {
             return this.View();
@@ -39,7 +40,7 @@ namespace CarShowRoom.Controllers
                     Manufacturer = bindingModel.Manufacturer,
                     Model = bindingModel.Model,
                     Picture = bindingModel.Picture,
-                    YearOfManufacture = bindingModel.YearOfManufacture,
+                    Year = bindingModel.Year,
                     Price = bindingModel.Price,
                 };
                 context.Cars.Add(dogFormDb);
@@ -53,8 +54,11 @@ namespace CarShowRoom.Controllers
         {
             return this.View();
         }
+        //!Create!
 
-        public IActionResult All(string searchStringModel, double searchDoublePrice)
+
+        //!TOVA E ZA ALL!
+        public IActionResult All(string searchStringModel, string searchCarPrice)
         {
 
             List<CarAllViewModel> cars = context.Cars
@@ -65,25 +69,28 @@ namespace CarShowRoom.Controllers
                     Manufacturer = carFromDb.Manufacturer,
                     Model = carFromDb.Model,
                     Picture = carFromDb.Picture,
-                    YearOfManufacture = carFromDb.YearOfManufacture,
+                    Year = carFromDb.Year,
                     Price = carFromDb.Price
                 })
                 .ToList();
 
-            if (!String.IsNullOrEmpty(searchStringModel) && searchDoublePrice.Equals(null))
+            //!Tuk e filtera!
+            if (!String.IsNullOrEmpty(searchStringModel) && !String.IsNullOrEmpty(searchCarPrice))
             {
-                cars = cars.Where(d => d.Model.Contains(searchStringModel) && d.Price == searchDoublePrice).ToList();
+                cars = cars.Where(c => c.Model.ToLower() == searchStringModel.ToLower() && c.Price == double.Parse(searchCarPrice)).ToList();
             }
             else if (!String.IsNullOrEmpty(searchStringModel))
             {
-                cars = cars.Where(d => d.Model.Contains(searchStringModel)).ToList();
+                cars = cars.Where(c => c.Model.ToLower() == searchStringModel.ToLower()).ToList();
             }
-            else if (searchDoublePrice.Equals(null))
+            else if (!String.IsNullOrEmpty(searchCarPrice))
             {
-                cars = cars.Where(d => d.Price == searchDoublePrice).ToList();
+                cars = cars.Where(c => c.Price == double.Parse(searchCarPrice)).ToList();
             }
             return this.View(cars);
         }
+        //!TOVA E ZA ALL!
+
         public IActionResult Sort()
         {
 
@@ -95,13 +102,64 @@ namespace CarShowRoom.Controllers
                     Manufacturer = carFromDb.Manufacturer,
                     Model = carFromDb.Model,
                     Picture = carFromDb.Picture,
-                    YearOfManufacture = carFromDb.YearOfManufacture,
+                    Year = carFromDb.Year,
                     Price = carFromDb.Price
-                }).OrderBy(x => x.Model)
+                })
                 .ToList();
 
             return this.View(cars);
         }
+
+
+        //!TUK ZA EDIT!
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Car item = context.Cars.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            CarEditViewModel car = new CarEditViewModel()
+            {
+                Id = item.Id,
+                RegNumber = item.RegNumber,
+                Manufacturer = item.Manufacturer,
+                Model = item.Model,
+                Picture = item.Picture,
+                Year = item.Year,
+                Price = item.Price
+            };
+            return View(car);
+        }
+        [HttpPost]
+        public IActionResult Edit(CarEditViewModel bindingModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Car car = new Car
+                {
+                    Id = bindingModel.Id,
+                    RegNumber = bindingModel.RegNumber,
+                    Manufacturer = bindingModel.Manufacturer,
+                    Model = bindingModel.Model,
+                    Picture = bindingModel.Picture,
+                    Year = bindingModel.Year,
+                    Price = bindingModel.Price
+                };
+                context.Cars.Update(car);
+                context.SaveChanges();
+                return this.RedirectToAction("All");
+            }
+            return View(bindingModel);
+        }
+        //!TUK ZA EDIT!
+
+
+        //!TUK ZA Delete!
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -120,7 +178,7 @@ namespace CarShowRoom.Controllers
                 Manufacturer = item.Manufacturer,
                 Model = item.Model,
                 Picture = item.Picture,
-                YearOfManufacture = item.YearOfManufacture,
+                Year = item.Year,
                 Price = item.Price
             };
             return View(car);
@@ -136,9 +194,13 @@ namespace CarShowRoom.Controllers
             }
             context.Cars.Remove(item);
             context.SaveChanges();
-            return this.RedirectToAction("All", "Dog");
+            return this.RedirectToAction("All", "Cars");
         }
-        public IActionResult Update(int? id)
+        //!TUK ZA Delete!
+
+
+        //!TUK ZA Details!
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -149,83 +211,18 @@ namespace CarShowRoom.Controllers
             {
                 return NotFound();
             }
-            CarUpdateViewModel car = new CarUpdateViewModel()
+            CarDetailsViewModel car = new CarDetailsViewModel()
             {
                 Id = item.Id,
                 RegNumber = item.RegNumber,
                 Manufacturer = item.Manufacturer,
                 Model = item.Model,
                 Picture = item.Picture,
-                YearOfManufacture = item.YearOfManufacture,
+                Year = item.Year,
                 Price = item.Price
             };
             return View(car);
         }
-        [HttpPost]
-        public IActionResult Update(CarUpdateViewModel bindingModel)
-        {
-            if (ModelState.IsValid)
-            {
-                Car car = new Car
-                {
-                    Id = bindingModel.Id,
-                    RegNumber = bindingModel.RegNumber,
-                    Manufacturer = bindingModel.Manufacturer,
-                    Model = bindingModel.Model,
-                    Picture = bindingModel.Picture,
-                    YearOfManufacture = bindingModel.YearOfManufacture,
-                    Price = bindingModel.Price
-                };
-                context.Cars.Update(car);
-                context.SaveChanges();
-                return this.RedirectToAction("All");
-            }
-            return View(bindingModel);
-        }
-        public IActionResult Read(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Car item = context.Cars.Find(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            CarUpdateViewModel car = new CarUpdateViewModel()
-            {
-                Id = item.Id,
-                RegNumber = item.RegNumber,
-                Manufacturer = item.Manufacturer,
-                Model = item.Model,
-                Picture = item.Picture,
-                YearOfManufacture = item.YearOfManufacture,
-                Price = item.Price
-            };
-            return View(car);
-        }
-        [HttpPost]
-        public IActionResult Read(CarUpdateViewModel bindingModel)
-        {
-            if (ModelState.IsValid)
-            {
-                Car car = new Car
-                {
-                    Id = bindingModel.Id,
-                    RegNumber = bindingModel.RegNumber,
-                    Manufacturer = bindingModel.Manufacturer,
-                    Model = bindingModel.Model,
-                    Picture = bindingModel.Picture,
-                    YearOfManufacture = bindingModel.YearOfManufacture,
-                    Price = bindingModel.Price
-                };
-                context.Cars.Update(car);
-                context.SaveChanges();
-                return this.RedirectToAction("All");
-            }
-            return View(bindingModel);
-        }
+            //!TUK ZA Details!
     }
 }
-

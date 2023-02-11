@@ -10,7 +10,7 @@ namespace CarShowRoom.Domain
     public class Car
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        
+
         public int Id { get; set; }
 
         [Required]
@@ -27,8 +27,8 @@ namespace CarShowRoom.Domain
 
         public string Picture { get; set; }
 
-        public DateTime YearOfManufacture { get; set; }
-        
+        public DateTime Year { get; set; }
+
         [Required]
         [Range(1000, 300000)]
         public double Price { get; set; }

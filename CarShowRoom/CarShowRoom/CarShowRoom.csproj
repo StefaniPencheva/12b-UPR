@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>aspnet-CarShowRoom-970A0692-EC6C-41F7-BCAC-34DE41713787</UserSecretsId>
+    <UserSecretsId>aspnet-CarShowRoom-F75FE0F5-56B7-4E1A-8CF7-DBD1C7371989</UserSecretsId>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
   </PropertyGroup>
 

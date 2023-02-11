@@ -24,8 +24,8 @@ namespace CarShowRoom.Models
         [Display(Name = "Picture")]
         public string Picture { get; set; }
 
-        [Display(Name = "YearOfManufacture")]
-        public DateTime YearOfManufacture { get; set; }
+        [Display(Name = "Year")]
+        public DateTime Year { get; set; }
 
         [Display(Name = "Price")]
         public double Price { get; set; }
