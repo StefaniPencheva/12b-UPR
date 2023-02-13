@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZadDogsIzlojba.Abstractions;
 using ZadDogsIzlojba.Data;
 using ZadDogsIzlojba.Domain;
 using ZadDogsIzlojba.Models;
@@ -11,11 +12,11 @@ namespace ZadDogsIzlojba.Controllers
 {
     public class DogController : Controller
     {
-        private readonly ApplicationDbContext context;
+        private readonly IDogService _dogService;
 
-        public DogController(ApplicationDbContext context)
+        public DogController(IDogService dogService)
         {
-            this.context = context;
+            this._dogService = dogService;
         }
 
         public IActionResult Index()
@@ -33,17 +34,11 @@ namespace ZadDogsIzlojba.Controllers
         {
             if (ModelState.IsValid)
             {
-                Dog dogFormDb = new Dog
+                var created= _dogService.Create(bindingModel.Name, bindingModel.Age, bindingModel.Breed, bindingModel.Picture);
+                if (created)
                 {
-                    Name = bindingModel.Name,
-                    Age = bindingModel.Age,
-                    Breed = bindingModel.Breed,
-                    Picture = bindingModel.Picture,
-                };
-                context.Dogs.Add(dogFormDb);
-                context.SaveChanges();
-
-                return this.RedirectToAction("Success");
+                    return this.RedirectToAction("Success");
+                }
             }
             return this.View();
         }
@@ -56,7 +51,7 @@ namespace ZadDogsIzlojba.Controllers
         public IActionResult All(string searchStringBreed, string searchStringName)
         {
 
-            List<DogAllViewModel> dogs = context.Dogs
+            List<DogAllViewModel> dogs = _dogService.GetDogs()
                 .Select(dogFromDb => new DogAllViewModel
                 {
                     Id = dogFromDb.Id,
@@ -83,7 +78,7 @@ namespace ZadDogsIzlojba.Controllers
         public IActionResult Sort()
         {
 
-            List<DogAllViewModel> dogs = context.Dogs
+            List<DogAllViewModel> dogs = _dogService.GetDogs()
                 .Select(dogFromDb => new DogAllViewModel
                 {
                     Id = dogFromDb.Id,
@@ -102,7 +97,7 @@ namespace ZadDogsIzlojba.Controllers
             {
                 return NotFound();
             }
-            Dog item = context.Dogs.Find(id);
+            Dog item = _dogService.Dogs.Find(id);
             if (item == null)
             {
                 return NotFound();
@@ -130,8 +125,8 @@ namespace ZadDogsIzlojba.Controllers
                     Breed = bindingModel.Breed,
                     Picture = bindingModel.Picture
                 };
-                context.Dogs.Update(dog);
-                context.SaveChanges();
+                _dogService.Dogs.Update(dog);
+                _dogService.SaveChanges();
                 return this.RedirectToAction("All");
             }
             return View(bindingModel);
@@ -143,7 +138,7 @@ namespace ZadDogsIzlojba.Controllers
             {
                 return NotFound();
             }
-            Dog item = context.Dogs.Find(id);
+            Dog item = _dogService.Dogs.Find(id);
             if (item == null)
             {
                 return NotFound();
@@ -161,14 +156,14 @@ namespace ZadDogsIzlojba.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            Dog item = context.Dogs.Find(id);
+            Dog item = _dogService.Dogs.Find(id);
 
             if (item == null)
             {
                 return NotFound();
             }
-            context.Dogs.Remove(item);
-            context.SaveChanges();
+            _dogService.Dogs.Remove(item);
+            _dogService.SaveChanges();
             return this.RedirectToAction("All", "Dog");
         }
 
@@ -178,7 +173,7 @@ namespace ZadDogsIzlojba.Controllers
             {
                 return NotFound();
             }
-            Dog item = context.Dogs.Find(id);
+            Dog item = _dogService.Dogs.Find(id);
             if (item == null)
             {
                 return NotFound();
