@@ -34,7 +34,7 @@ namespace CarShowRoom.Controllers
         {
             if (ModelState.IsValid)
             {
-                Car dogFormDb = new Car
+                Car carFormDb = new Car
                 {
                     RegNumber = bindingModel.RegNumber,
                     Manufacturer = bindingModel.Manufacturer,
@@ -43,7 +43,7 @@ namespace CarShowRoom.Controllers
                     Year = bindingModel.Year,
                     Price = bindingModel.Price,
                 };
-                context.Cars.Add(dogFormDb);
+                context.Cars.Add(carFormDb);
                 context.SaveChanges();
 
                 return this.RedirectToAction("Success");
