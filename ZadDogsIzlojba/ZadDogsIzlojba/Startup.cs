@@ -11,7 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZadDogsIzlojba.Abstractions;
 using ZadDogsIzlojba.Data;
+using ZadDogsIzlojba.Services;
 
 namespace ZadDogsIzlojba
 {
@@ -35,6 +37,7 @@ namespace ZadDogsIzlojba
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+            services.AddTransient<IDogService, DogServices>();
 
             services.AddRazorPages();
             services.Configure<IdentityOptions>(options =>

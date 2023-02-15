@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,20 +62,11 @@ namespace ZadDogsIzlojba.Controllers
                     Picture = dogFromDb.Picture
                 })
                 .ToList();
-            if (!String.IsNullOrEmpty(searchStringBreed)&& !String.IsNullOrEmpty(searchStringName))
-            {
-                dogs = dogs.Where(d => d.Breed.Contains(searchStringBreed) && d.Name.Contains(searchStringName)).ToList();
-            }
-            else if (!String.IsNullOrEmpty(searchStringBreed))
-            {
-                dogs = dogs.Where(d => d.Breed.Contains(searchStringBreed)).ToList();
-            }
-            else if (!String.IsNullOrEmpty(searchStringName))
-            {
-                dogs = dogs.Where(d => d.Name.Contains(searchStringName)).ToList();
-            }
-            return this.View(dogs);
+                
+                return this.View(dogs);
+            
         }
+            
         public IActionResult Sort()
         {
 
@@ -91,13 +83,9 @@ namespace ZadDogsIzlojba.Controllers
            
             return this.View(dogs);
         }
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Dog item = _dogService.Dogs.Find(id);
+            Dog item = _dogService.GetDogById(id);
             if (item == null)
             {
                 return NotFound();
@@ -113,32 +101,23 @@ namespace ZadDogsIzlojba.Controllers
             return View(dog);
         }
         [HttpPost]
-        public IActionResult Edit(DogEditViewModel bindingModel)
+        public IActionResult Edit(int id, DogEditViewModel bindingModel)
         {
             if (ModelState.IsValid)
             {
-                Dog dog = new Dog
+                var updated = _dogService.UpdateDog(id, bindingModel.Name, bindingModel.Age, bindingModel.Breed, bindingModel.Picture);
+                if (updated)
                 {
-                    Id = bindingModel.Id,
-                    Name = bindingModel.Name,
-                    Age = bindingModel.Age,
-                    Breed = bindingModel.Breed,
-                    Picture = bindingModel.Picture
-                };
-                _dogService.Dogs.Update(dog);
-                _dogService.SaveChanges();
-                return this.RedirectToAction("All");
+                    return this.RedirectToAction("All");
+                }
+                
             }
             return View(bindingModel);
         }
 
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Dog item = _dogService.Dogs.Find(id);
+            Dog item = _dogService.GetDogById(id);
             if (item == null)
             {
                 return NotFound();
@@ -154,26 +133,23 @@ namespace ZadDogsIzlojba.Controllers
             return View(dog);
         }
         [HttpPost]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int id, IFormCollection collection)
         {
-            Dog item = _dogService.Dogs.Find(id);
+            var deleted = _dogService.RemoveId(id);
 
-            if (item == null)
+            if (deleted)
             {
-                return NotFound();
+                return this.RedirectToAction("All", "Dog");
             }
-            _dogService.Dogs.Remove(item);
-            _dogService.SaveChanges();
-            return this.RedirectToAction("All", "Dog");
+            else
+            {
+                return View();
+            }
         }
 
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Dog item = _dogService.Dogs.Find(id);
+            Dog item = _dogService.GetDogById(id);
             if (item == null)
             {
                 return NotFound();
