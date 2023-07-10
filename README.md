@@ -1,1 +1,1 @@
-# 12b-UPR
+# Mini Projects
